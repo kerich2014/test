@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Layout as AntLayout, Menu } from 'antd';
-import { Link, useLocation } from 'react-router-dom';
-import { HomeOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { Layout as AntLayout, Menu, Button, Avatar } from 'antd';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { 
+  HomeOutlined, 
+  InfoCircleOutlined, 
+  UserOutlined,
+  TeamOutlined,
+  LogoutOutlined 
+} from '@ant-design/icons';
+import { getCurrentUser } from '@features/Auth/api/authApi';
 
 const { Header, Content, Footer } = AntLayout;
 
@@ -41,18 +48,9 @@ const StyledFooter = styled(Footer)`
   text-align: center;
 `;
 
-const menuItems = [
-  {
-    key: '/',
-    icon: <HomeOutlined />,
-    label: <Link to="/">Главная</Link>,
-  },
-  {
-    key: '/about',
-    icon: <InfoCircleOutlined />,
-    label: <Link to="/about">О проекте</Link>,
-  },
-];
+const LogoutButton = styled(Button)`
+  margin-left: 16px;
+`;
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -60,11 +58,42 @@ interface LayoutProps {
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [isMounted, setIsMounted] = useState(false);
+  const currentUser = getCurrentUser();
+
+  useEffect(() => {
+    setIsMounted(true);
+    return () => setIsMounted(false);
+  }, []);
+
+  const menuItems = [
+    {
+      key: '/users',
+      icon: <TeamOutlined />,
+      label: <Link to="/users">Пользователи</Link>,
+    },
+    {
+      key: '/about',
+      icon: <InfoCircleOutlined />,
+      label: <Link to="/about">О проекте</Link>,
+    },
+  ];
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    if (isMounted) {
+      navigate('/login');
+    }
+  };
+
+  const token = localStorage.getItem('token');
 
   return (
     <StyledLayout>
       <StyledHeader>
-        <Logo>FSD</Logo>
+        <Logo>TestApp</Logo>
         <Menu
           theme="light"
           mode="horizontal"
@@ -72,9 +101,26 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           items={menuItems}
           style={{ flex: 1 }}
         />
+        {token && currentUser && (
+          <div style={{ display: 'flex', alignItems: 'center', marginRight: 24 }}>
+            <Avatar 
+              src={currentUser.avatar} 
+              icon={!currentUser.avatar && <UserOutlined />}
+              size="small"
+              style={{ marginRight: 8 }}
+            />
+            <span style={{ marginRight: 16 }}>{currentUser.name}</span>
+            <LogoutButton
+              type="text"
+              icon={<LogoutOutlined />}
+              onClick={handleLogout}
+            >
+              Выйти
+            </LogoutButton>
+          </div>
+        )}
       </StyledHeader>
       <StyledContent>{children}</StyledContent>
-      <StyledFooter>FSD Architecture ©2023</StyledFooter>
     </StyledLayout>
   );
 };

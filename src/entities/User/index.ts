@@ -1,1 +1,1 @@
-export type { User, UserProfile } from './model/types';
+export type { User, CreateUserDto, UpdateUserDto } from './model/types';

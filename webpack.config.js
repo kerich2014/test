@@ -2,9 +2,19 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const webpack = require('webpack');
+const dotenv = require('dotenv');
 
 module.exports = (env, argv) => {
   const isDevelopment = argv.mode === 'development';
+  
+  // Загружаем .env файл
+  const envVars = dotenv.config().parsed || {};
+  
+  // Преобразуем env переменные в объект для DefinePlugin
+  const envKeys = Object.keys(envVars).reduce((prev, next) => {
+    prev[`process.env.${next}`] = JSON.stringify(envVars[next]);
+    return prev;
+  }, {});
 
   return {
     entry: './src/index.tsx',
@@ -84,9 +94,8 @@ module.exports = (env, argv) => {
         inject: 'body',
       }),
       new webpack.DefinePlugin({
-        'process.env.REACT_APP_API_URL': JSON.stringify(
-          process.env.REACT_APP_API_URL || 'http://localhost:3001/api'
-        ),
+        'process.env.NODE_ENV': JSON.stringify(isDevelopment ? 'development' : 'production'),
+        ...envKeys,
       }),
     ],
     devServer: {

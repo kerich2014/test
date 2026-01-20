@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ConfigProvider } from 'antd';
@@ -9,7 +9,12 @@ import 'dayjs/locale/ru';
 
 import { MainPage } from '@pages/MainPage';
 import { AboutPage } from '@pages/AboutPage';
+import { LoginPage } from '@pages/LoginPage';
+import { UsersPage } from '@pages/UsersPage';
+import { CreateUserPage } from '@pages/CreateUserPage';
+import { EditUserPage } from '@pages/EditUserPage';
 import { Layout } from '@widgets/Layout';
+import { ProtectedRoute } from './providers/ProtectedRoute';
 
 import 'antd/dist/reset.css';
 
@@ -27,7 +32,7 @@ const queryClient = new QueryClient({
 
 export const App: React.FC = () => {
   return (
-    <Router>
+    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <QueryClientProvider client={queryClient}>
         <ConfigProvider
           locale={ruRU}
@@ -38,12 +43,29 @@ export const App: React.FC = () => {
             },
           }}
         >
-          <Layout>
-            <Routes>
-              <Route path="/" element={<MainPage />} />
-              <Route path="/about" element={<AboutPage />} />
-            </Routes>
-          </Layout>
+          <Routes>
+
+            <Route path="/login" element={<LoginPage />} />
+            
+
+            <Route path="/*" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Routes>
+                    <Route index element={<MainPage />} />
+                    <Route path="about" element={<AboutPage />} />
+                    <Route path="users" element={<UsersPage />} />
+                    <Route path="users/create" element={<CreateUserPage />} />
+                    <Route path="users/:id/edit" element={<EditUserPage />} />
+                    <Route path="*" element={<Navigate to="/users" replace />} />
+                  </Routes>
+                </Layout>
+              </ProtectedRoute>
+            } />
+            
+\
+            <Route path="*" element={<Navigate to="/users" replace />} />
+          </Routes>
         </ConfigProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>

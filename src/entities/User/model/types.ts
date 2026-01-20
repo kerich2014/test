@@ -1,12 +1,9 @@
 export interface User {
   id: string;
-  email: string;
   name: string;
+  avatar?: string;
   createdAt: string;
-  updatedAt: string;
 }
 
-export interface UserProfile extends User {
-  role: string;
-  avatar?: string;
-}
+export type CreateUserDto = Omit<User, 'id' | 'createdAt'>;
+export type UpdateUserDto = Partial<CreateUserDto>;

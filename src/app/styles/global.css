@@ -15,3 +15,25 @@ body {
 #root {
   min-height: 100vh;
 }
+
+
+.ant-table-body,
+.ant-table-content,
+.ant-tabs-content,
+.ant-modal-content,
+.ant-drawer-content {
+  transform: translateZ(0);
+}
+
+
+.ant-notification,
+.ant-message {
+  resize: none;
+}
+
+
+.ant-layout,
+.ant-layout-content {
+  min-height: 100vh;
+  overflow-anchor: none;
+}

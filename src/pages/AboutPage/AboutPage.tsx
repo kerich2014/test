@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, List } from 'antd';
+import { Typography, List, Card } from 'antd';
 import styled from 'styled-components';
 
 const { Title, Paragraph } = Typography;
@@ -25,28 +25,27 @@ export const AboutPage: React.FC = () => {
   return (
     <StyledAboutPage>
       <Title level={1}>О проекте</Title>
-      <Paragraph>
-        Этот проект демонстрирует использование архитектуры Feature-Sliced Design
-        с современным стеком технологий.
-      </Paragraph>
       
-      <Title level={2}>Используемые технологии</Title>
-      <List
-        bordered
-        dataSource={data}
-        renderItem={(item) => <List.Item>{item}</List.Item>}
-        style={{ marginTop: 16 }}
-      />
+      <Card variant="outlined" style={{ marginTop: 24 }}>
+        <Title level={2}>Используемые технологии</Title>
+        <List
+          dataSource={data}
+          renderItem={(item) => <List.Item>{item}</List.Item>}
+          style={{ marginTop: 16 }}
+        />
+      </Card>
       
-      <Title level={2} style={{ marginTop: 32 }}>FSD слои</Title>
-      <Paragraph>
-        <strong>app</strong> - инициализация приложения, провайдеры<br />
-        <strong>pages</strong> - страницы приложения<br />
-        <strong>widgets</strong> - сложные составные компоненты<br />
-        <strong>features</strong> - пользовательские сценарии<br />
-        <strong>entities</strong> - бизнес-сущности<br />
-        <strong>shared</strong> - переиспользуемый код
-      </Paragraph>
+      <Card variant="outlined" style={{ marginTop: 24 }}>
+        <Title level={2}>FSD слои</Title>
+        <Paragraph>
+          <strong>app</strong> - инициализация приложения, провайдеры<br />
+          <strong>pages</strong> - страницы приложения<br />
+          <strong>widgets</strong> - сложные составные компоненты<br />
+          <strong>features</strong> - пользовательские сценарии<br />
+          <strong>entities</strong> - бизнес-сущности<br />
+          <strong>shared</strong> - переиспользуемый код
+        </Paragraph>
+      </Card>
     </StyledAboutPage>
   );
 };
